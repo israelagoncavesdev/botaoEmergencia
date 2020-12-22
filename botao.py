@@ -28,11 +28,9 @@ def EnviaNotificacaoPushbullet(Numero):
 	StringDataHora = str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" em "+str(now.day)+"/"+str(now.month)+"/"+str(now.year)
 
 	StringMsg = "Acionamento numero "+str(Numero)+" do botao de emergencia. Botao acionado por ultimo em "+StringDataHora+"."
-	data_send = {"type": "note", "title": "Notificacao - botao emergencia", "body": StringMsg}
- 
-        ACCESS_TOKEN = 'tttttttttttttttttttttttttttttttttt'   #substituia "tttttttttttttttttttttttttttttttttt" pelo seu Acces Token
-        resp = requests.post('https://api.pushbullet.com/v2/pushes', data=json.dumps(data_send), headers={'Authorization': 'Bearer ' + ACCESS_TOKEN, 'Content-Type': 'application/json'})
-
+	
+	print(StringMsg)
+	
 	return
 
 #Funcao: verifica acionamento e desacionamento do botao de emergencia
