@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 import time
-import RPi.GPIO as GPIO
+import OPi.GPIO as GPIO
 import requests
 import json
 
