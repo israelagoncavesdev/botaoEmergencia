@@ -16,7 +16,7 @@ GPIOBotaoEmergencia = 18 #Broadcom pin 18 (P1 pin 12)
 #Retorno: nenhum
 def PreparaIOs():
 	#configura GPIO do botao como entrada e com pull up (do SoC Broadcom)
-        GPIO.setmode(GPIO.BCM) 
+        GPIO.setmode(GPIO.BOARD) 
         GPIO.setup(GPIOBotaoEmergencia, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         return
 
