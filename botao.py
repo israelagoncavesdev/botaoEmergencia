@@ -60,9 +60,8 @@ def VerificaBotaoEmergencia():
 #------------------------
 #   Programa principal
 #-----------------------
-time.sleep(30)
+time.sleep(10)
 PreparaIOs()
 
 while True:
-	print('iniciado!')
 	VerificaBotaoEmergencia()
