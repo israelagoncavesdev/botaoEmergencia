@@ -11,7 +11,7 @@ NumeroAcionamentosBotao = 0
 #GPIOs utilizados:
 GPIOBotaoEmergencia = 18 #Broadcom pin 18 (P1 pin 12)
 
-GPIO.setboard(GPIO.PCPCPLUS)    # Orange Pi PC board
+GPIO.setboard(GPIO.PC)    # Orange Pi PC board
 
 #Funcao: prepara I/Os
 #Parametros: nenhum
@@ -43,7 +43,7 @@ def VerificaBotaoEmergencia():
 
 	#se o botao foi pressionado, envia a notificacao. 
 	#caso contrario, nada e feito.
-	if (GPIO.input(GPIOBotaoEmergencia) == 1):
+	if (GPIO.input(GPIOBotaoEmergencia) == 0):
 		#Atualiza contagem de acionamentos e envia notificacao pelo pushbullet		
 		NumeroAcionamentosBotao = NumeroAcionamentosBotao + 1
 		EnviaNotificacaoPushbullet(NumeroAcionamentosBotao)		
@@ -52,7 +52,7 @@ def VerificaBotaoEmergencia():
 		time.sleep(0.050)
 
 		#aguarda botao ser solto
-		while (GPIO.input(GPIOBotaoEmergencia) == 1):
+		while (GPIO.input(GPIOBotaoEmergencia) == 0):
 			continue
 
 	return
@@ -60,7 +60,7 @@ def VerificaBotaoEmergencia():
 #------------------------
 #   Programa principal
 #-----------------------
-time.sleep(10)
+time.sleep(15)
 PreparaIOs()
 
 while True:
