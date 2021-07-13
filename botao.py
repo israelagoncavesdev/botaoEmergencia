@@ -55,6 +55,9 @@ def VerificaBotaoEmergencia():
 		while (GPIO.input(GPIOBotaoEmergencia) == 0):
 			continue
 
+	if (GPIO.input(GPIOBotaoEmergencia) == 0):
+		print('click')
+
 	return
 
 #------------------------
