@@ -11,7 +11,7 @@ NumeroAcionamentosBotao = 0
 #GPIOs utilizados:
 GPIOBotaoEmergencia = 18 #Broadcom pin 18 (P1 pin 12)
 
-GPIO.setboard(GPIO.PC)    # Orange Pi PC board
+GPIO.setboard(GPIO.PC2)    # Orange Pi PC board
 
 #Funcao: prepara I/Os
 #Parametros: nenhum
