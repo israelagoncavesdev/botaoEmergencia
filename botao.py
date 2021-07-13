@@ -4,64 +4,42 @@ import time
 import OPi.GPIO as GPIO
 import requests
 import json
+import argparse
+import signal
+import sys
+import time
+import logging
 
-#Variaveis globais:
-NumeroAcionamentosBotao = 0
+#!/usr/bin/env python3
 
-#GPIOs utilizados:
-GPIOBotaoEmergencia = 18 #Broadcom pin 18 (P1 pin 12)
+from rpi_rf import RFDevice
 
+rfdevice = None
 GPIO.setboard(GPIO.PC2)    # Orange Pi PC board
 
-#Funcao: prepara I/Os
-#Parametros: nenhum
-#Retorno: nenhum
-def PreparaIOs():
-	#configura GPIO do botao como entrada e com pull up (do SoC Broadcom)
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(GPIOBotaoEmergencia, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        return
+# pylint: disable=unused-argument
+def exithandler(signal, frame):
+    rfdevice.cleanup()
+    sys.exit(0)
 
-#Funcao: envia notificacao via pushbullet
-#Parametros: numero do acionamento do botao
-#Retorno: nenhum
-def EnviaNotificacaoPushbullet(Numero):
-	now = datetime.now()
-	StringDataHora = str(now.hour)+":"+str(now.minute)+":"+str(now.second)+" em "+str(now.day)+"/"+str(now.month)+"/"+str(now.year)
+logging.basicConfig(level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S',
+                    format='%(asctime)-15s - [%(levelname)s] %(module)s: %(message)s', )
 
-	StringMsg = "Acionamento numero "+str(Numero)+" do botao de emergencia. Botao acionado por ultimo em "+StringDataHora+"."
-	
-	print(StringMsg)
-	
-	return
+parser = argparse.ArgumentParser(description='Receives a decimal code via a 433/315MHz GPIO device')
+parser.add_argument('-g', dest='gpio', type=int, default=27,
+                    help="GPIO pin (Default: 27)")
+args = parser.parse_args()
 
-#Funcao: verifica acionamento e desacionamento do botao de emergencia
-#Parametros: nenhum
-#Retorno: nenhum
-def VerificaBotaoEmergencia():
-	global NumeroAcionamentosBotao
-
-	#se o botao foi pressionado, envia a notificacao. 
-	#caso contrario, nada e feito.
-	if (GPIO.input(GPIOBotaoEmergencia) == 0):
-		#Atualiza contagem de acionamentos e envia notificacao pelo pushbullet		
-		NumeroAcionamentosBotao = NumeroAcionamentosBotao + 1
-		EnviaNotificacaoPushbullet(NumeroAcionamentosBotao)		
-
-		#delay para debouncing (50ms)
-		time.sleep(0.050)
-
-		#aguarda botao ser solto
-		while (GPIO.input(GPIOBotaoEmergencia) == 0):
-			continue
-
-	return
-
-#------------------------
-#   Programa principal
-#-----------------------
-time.sleep(15)
-PreparaIOs()
-
+signal.signal(signal.SIGINT, exithandler)
+rfdevice = RFDevice(args.gpio)
+rfdevice.enable_rx()
+timestamp = None
+logging.info("Listening for codes on GPIO " + str(args.gpio))
 while True:
-	VerificaBotaoEmergencia()
+    if rfdevice.rx_code_timestamp != timestamp:
+        timestamp = rfdevice.rx_code_timestamp
+        logging.info(str(rfdevice.rx_code) +
+                     " [pulselength " + str(rfdevice.rx_pulselength) +
+                     ", protocol " + str(rfdevice.rx_proto) + "]")
+    time.sleep(0.01)
+rfdevice.cleanup()
