@@ -1,21 +1,14 @@
-import os
-from datetime import datetime
-import time
-import OPi.GPIO as GPIO
-import requests
-import json
+#!/usr/bin/env python3
+
 import argparse
 import signal
 import sys
 import time
 import logging
 
-#!/usr/bin/env python3
-
 from rpi_rf import RFDevice
 
 rfdevice = None
-GPIO.setboard(GPIO.PC2)    # Orange Pi PC board
 
 # pylint: disable=unused-argument
 def exithandler(signal, frame):
