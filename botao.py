@@ -19,7 +19,7 @@ GPIO.setboard(GPIO.PC2)    # Orange Pi PC board
 def PreparaIOs():
 	#configura GPIO do botao como entrada e com pull up (do SoC Broadcom)
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(GPIOBotaoEmergencia, GPIO.IN)
+        GPIO.setup(GPIOBotaoEmergencia, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         return
 
 #Funcao: envia notificacao via pushbullet
@@ -43,7 +43,7 @@ def VerificaBotaoEmergencia():
 
 	#se o botao foi pressionado, envia a notificacao. 
 	#caso contrario, nada e feito.
-	if (GPIO.input(GPIOBotaoEmergencia) == 1):
+	if (GPIO.input(GPIOBotaoEmergencia) == 0):
 		#Atualiza contagem de acionamentos e envia notificacao pelo pushbullet		
 		NumeroAcionamentosBotao = NumeroAcionamentosBotao + 1
 		EnviaNotificacaoPushbullet(NumeroAcionamentosBotao)		
@@ -54,9 +54,6 @@ def VerificaBotaoEmergencia():
 		#aguarda botao ser solto
 		while (GPIO.input(GPIOBotaoEmergencia) == 0):
 			continue
-
-	if (GPIO.input(GPIOBotaoEmergencia) == 0):
-		print('click')
 
 	return
 
