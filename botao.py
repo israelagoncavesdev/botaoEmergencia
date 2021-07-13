@@ -43,7 +43,7 @@ def VerificaBotaoEmergencia():
 
 	#se o botao foi pressionado, envia a notificacao. 
 	#caso contrario, nada e feito.
-	if (GPIO.input(GPIOBotaoEmergencia) == 0):
+	if (GPIO.input(GPIOBotaoEmergencia) == 1):
 		#Atualiza contagem de acionamentos e envia notificacao pelo pushbullet		
 		NumeroAcionamentosBotao = NumeroAcionamentosBotao + 1
 		EnviaNotificacaoPushbullet(NumeroAcionamentosBotao)		
