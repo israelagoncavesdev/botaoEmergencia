@@ -13,5 +13,5 @@ gpio.setcfg(port.PG7, gpio.OUTPUT)
 gpio.output(port.PG7, gpio.HIGH)
 #turn off the LED after 2 seconds
 #Et on eteint après 2 secondes
-sleep(2)
+sleep(20)
 gpio.output(port.PG7, gpio.LOW)
