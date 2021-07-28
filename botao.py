@@ -7,11 +7,11 @@ from time import sleep
 gpio.init()
 #setup the port (same as raspberry pi's gpio.setup() function)
 #Configure la broche PG7 (equivalent au GPIO21 du Raspberry) comme une sortie
-gpio.setcfg(port.PG7, gpio.OUTPUT)
+gpio.setcfg(port.PC4, gpio.OUTPUT)
 #now we do something (light up the LED)
 #Maintenant, on allume la LED
-gpio.output(port.PG7, gpio.HIGH)
+gpio.output(port.PC4, gpio.HIGH)
 #turn off the LED after 2 seconds
 #Et on eteint après 2 secondes
 sleep(20)
-gpio.output(port.PG7, gpio.LOW)
+gpio.output(port.PC4, gpio.LOW)
