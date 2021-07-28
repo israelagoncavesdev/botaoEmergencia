@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #import the library / Import des librairies
 from pyA20.gpio import gpio
 from pyA20.gpio import port
