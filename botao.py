@@ -1,17 +1,38 @@
-# -*- coding: utf-8 -*-
-#import the library / Import des librairies
-from pyA20.gpio import gpio
-from pyA20.gpio import port
-from time import sleep
-#initialize the gpio module / initialise le GPIO
-gpio.init()
-#setup the port (same as raspberry pi's gpio.setup() function)
-#Configure la broche PG7 (equivalent au GPIO21 du Raspberry) comme une sortie
-gpio.setcfg(port.PC4, gpio.OUTPUT)
-#now we do something (light up the LED)
-#Maintenant, on allume la LED
-gpio.output(port.PC4, gpio.HIGH)
-#turn off the LED after 2 seconds
-#Et on eteint après 2 secondes
-sleep(20)
-gpio.output(port.PC4, gpio.LOW)
+#!/usr/bin/env python3
+
+import argparse
+import signal
+import sys
+import time
+import logging
+
+from rpi_rf import RFDevice
+
+rfdevice = None
+
+# pylint: disable=unused-argument
+def exithandler(signal, frame):
+    rfdevice.cleanup()
+    sys.exit(0)
+
+logging.basicConfig(level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S',
+                    format='%(asctime)-15s - [%(levelname)s] %(module)s: %(message)s', )
+
+parser = argparse.ArgumentParser(description='Receives a decimal code via a 433/315MHz GPIO device')
+parser.add_argument('-g', dest='gpio', type=int, default=27,
+                    help="GPIO pin (Default: 27)")
+args = parser.parse_args()
+
+signal.signal(signal.SIGINT, exithandler)
+rfdevice = RFDevice(args.gpio)
+rfdevice.enable_rx()
+timestamp = None
+logging.info("Listening for codes on GPIO " + str(args.gpio))
+while True:
+    if rfdevice.rx_code_timestamp != timestamp:
+        timestamp = rfdevice.rx_code_timestamp
+        logging.info(str(rfdevice.rx_code) +
+                     " [pulselength " + str(rfdevice.rx_pulselength) +
+                     ", protocol " + str(rfdevice.rx_proto) + "]")
+    time.sleep(0.01)
+rfdevice.cleanup()
